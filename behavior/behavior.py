@@ -105,12 +105,12 @@ class behavior(txtcol):
 
     def getTrials(self, save= False):
         self.bhv = {}
-        # self.bhv.codes = {  1 : 'Pavlovian_CSp_2s',
-        #                     2 : 'CSmix_cond_2s_end',
-        #                     3 : 'Pavlovian_CSm_shock',
-        #                     4 : 'Blank_2s',
-        #                     5 : 'Lick_reward',
-        #                     6 : 'Unconditional_reward'}
+        self.codes = {  1 : 'Pavlovian_CSp_2s',
+                            2 : 'CSmix_cond_2s_end',
+                            3 : 'Pavlovian_CSm_shock',
+                            4 : 'Blank_2s',
+                            5 : 'Lick_reward',
+                            6 : 'Unconditional_reward'}
 
         for date in self.dates:
             temp_bhv = {}
