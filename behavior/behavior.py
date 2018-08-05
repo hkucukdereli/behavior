@@ -192,9 +192,6 @@ class behavior(txtcol):
                 if len(self.nidaq[self.date][self.run]) > 0:
                     duration = self.nidaq[self.date][self.run]['timestamps'].iloc[-1]
                     temp[self.run]['timestamps'] = np.linspace(0.0, duration, len(speed))
-                #     print '-------', self.mouse, self.date, self.run, '--------'
-                #     print duration
-                #     print np.linspace(0.0, duration, len(temp))
 
             self.running[self.date] = temp
 
@@ -234,6 +231,9 @@ class behavior(txtcol):
             return performance
         else:
             raise IOError ('bhv' + ' data is not loaded.')
+
+    def getFs(self):
+        return self.data['nidaq'][self.date][self.run]['frequency']
 
 if __name__ == '__main__':
     mouse = 'LR8'
