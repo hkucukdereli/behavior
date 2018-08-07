@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat, savemat
+import pickle
 
 class txtcol:
     OKGREEN = '\033[92m'
@@ -64,7 +65,7 @@ class behavior(txtcol):
         else:
             return self.path
 
-    def loadData(self, fileType= 'all', verbose= True):
+    def loadData(self, fileType= 'all', verbose= True, save= False):
         self.data['bhv'] = {}
         self.data['nidaq'] = {}
         self.data['running'] = {}
@@ -118,6 +119,12 @@ class behavior(txtcol):
             if verbose:
                 print('- - -\n')
 
+        if save:
+            print('Saving locally...')
+            with open('/Users/Amelia/Documents/hakan/data/CNO_trials/' + self.mouse + '.obj', 'wb') as handle:
+                pickle.dump(self.data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            print('Saved.')
+
     def loadTrials(self, save= False):
         self.bhv = {}
         self.codes = {}
@@ -147,6 +154,14 @@ class behavior(txtcol):
                 self.bhv[self.date] = temp_bhv
                 self.codes[self.date] = temp_codes
 
+            if save:
+                print('Saving locally...')
+                with open('/Users/Amelia/Documents/hakan/data/CNO_trials/' + self.mouse + '_bhv.obj', 'wb') as handle:
+                    pickle.dump(self.bhv, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                with open('/Users/Amelia/Documents/hakan/data/CNO_trials/' + self.mouse + '_codes.obj', 'wb') as handle:
+                    pickle.dump(self.codes, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                print('Saved.')
+
     def loadNidaq(self, clean= True, save= False):
         self.nidaq = {}
 
@@ -175,6 +190,13 @@ class behavior(txtcol):
 
             self.nidaq[self.date] = tempRun
 
+        if save:
+            print('Saving locally...')
+            with open('/Users/Amelia/Documents/hakan/data/CNO_trials/' + self.mouse + '_nidaq.obj', 'wb') as handle:
+                pickle.dump(self.nidaq, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            print('Saved.')
+
+
     def loadRunning(self, save= False):
         self.running = {}
 
@@ -194,6 +216,12 @@ class behavior(txtcol):
                     temp[self.run]['timestamps'] = np.linspace(0.0, duration, len(speed))
 
             self.running[self.date] = temp
+
+        if save:
+            print('Saving locally...')
+            with open('/Users/Amelia/Documents/hakan/data/CNO_trials/' + self.mouse + '_running.obj', 'wb') as handle:
+                pickle.dump(self.running, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            print('Saved.')
 
     def getData(self, fileType, date, run):
         if fileType in ['bhv', 'nidaq', 'running', 'eye', 'cam']:
