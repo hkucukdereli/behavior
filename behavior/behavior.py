@@ -196,7 +196,6 @@ class behavior(txtcol):
                 pickle.dump(self.nidaq, handle, protocol=pickle.HIGHEST_PROTOCOL)
             print('Saved.')
 
-
     def loadRunning(self, save= False):
         self.running = {}
 
