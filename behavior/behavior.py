@@ -222,6 +222,39 @@ class behavior(txtcol):
                 pickle.dump(self.running, handle, protocol=pickle.HIGHEST_PROTOCOL)
             print('Saved.')
 
+    def findOnsets(self, save=False):
+        self.signal = {}
+        self.onsets = {}
+        self.offsets = {}
+        self.trials = {}
+        for date in self.dates:
+            self.signal[date] = {}
+            self.onsets[date] = {}
+            self.offsets[date] = {}
+            self.trials[date] = {}
+            for run in self.runs:
+                self.signal[date][run] = {}
+                self.onsets[date][run] = {}
+                self.offsets[date][run] = {}
+                self.trials[date][run] = self.bhv[date][run]['trialnum']
+                cols = self.nidaq[date][run].columns[0:6]
+                for col in cols:
+                    self.signal[date][run]['timestamps'] = self.nidaq[date][run]['timestamps']
+                    self.onsets[date][run][col] = self.nidaq[date][run]['timestamps'][self.nidaq[date][run][col].diff() > 2.0]
+                    self.offsets[date][run][col] = self.nidaq[date][run]['timestamps'][self.nidaq[date][run][col].diff() < -2.0]
+
+                    if col == 'visual_stimulus':
+                        visuals = len(self.onsets[date][run]['visual_stimulus'])
+                        trials = self.bhv[date][run]['trialnum'].iloc[-1]
+                        if visuals > trials:
+                            indOn = self.onsets[date][run]['visual_stimulus'].index[0]
+                            indOff = self.offsets[date][run]['visual_stimulus'].index[0]
+                            self.onsets[date][run]['visual_stimulus'].drop(indOn, inplace=True)
+                            self.offsets[date][run]['visual_stimulus'].drop(indOff, inplace=True)
+
+                if len(self.onsets[date][run][col]) != len(self.offsets[date][run][col]):
+                    print(self.mouse+' '+date+' '+str(run)+' '+col+' numbers are not equal')
+
     def getData(self, fileType, date, run):
         if fileType in ['bhv', 'nidaq', 'running', 'eye', 'cam']:
             if len(self.data[fileType][date][run]) != 0:
