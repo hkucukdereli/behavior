@@ -222,26 +222,30 @@ class behavior(txtcol):
                 pickle.dump(self.running, handle, protocol=pickle.HIGHEST_PROTOCOL)
             print('Saved.')
 
-    def findOnsets(self, save=False):
+    def findOnsets(self, threshold= 2.0, save= False):
+        self.timestamps = {}
         self.signal = {}
         self.onsets = {}
         self.offsets = {}
         self.trials = {}
         for date in self.dates:
+            self.timestamps[date] = {}
             self.signal[date] = {}
             self.onsets[date] = {}
             self.offsets[date] = {}
             self.trials[date] = {}
             for run in self.runs:
+                self.timestamps[date][run] = {}
                 self.signal[date][run] = {}
                 self.onsets[date][run] = {}
                 self.offsets[date][run] = {}
                 self.trials[date][run] = self.bhv[date][run]['trialnum']
                 cols = self.nidaq[date][run].columns[0:6]
                 for col in cols:
-                    self.signal[date][run]['timestamps'] = self.nidaq[date][run]['timestamps']
-                    self.onsets[date][run][col] = self.nidaq[date][run]['timestamps'][self.nidaq[date][run][col].diff() > 2.0]
-                    self.offsets[date][run][col] = self.nidaq[date][run]['timestamps'][self.nidaq[date][run][col].diff() < -2.0]
+                    self.timestamps[date][run]['timestamps'] = self.nidaq[date][run]['timestamps']
+                    self.signal[date][run][col] = self.nidaq[date][run]['timestamps'][self.nidaq[date][run][col] > threshold]
+                    self.onsets[date][run][col] = self.nidaq[date][run]['timestamps'][self.nidaq[date][run][col].diff() > threshold]
+                    self.offsets[date][run][col] = self.nidaq[date][run]['timestamps'][self.nidaq[date][run][col].diff() < -threshold]
 
                     if col == 'visual_stimulus':
                         visuals = len(self.onsets[date][run]['visual_stimulus'])
@@ -253,7 +257,7 @@ class behavior(txtcol):
                             self.offsets[date][run]['visual_stimulus'].drop(indOff, inplace=True)
 
                 if len(self.onsets[date][run][col]) != len(self.offsets[date][run][col]):
-                    print(self.mouse+' '+date+' '+str(run)+' '+col+' numbers are not equal')
+                    print(self.mouse+' '+date+' '+str(run)+' '+col+' numbers are not equal...'+str(len(self.onsets[date][run][col]))+str(len(self.offsets[date][run][col])))
 
     def getData(self, fileType, date, run):
         if fileType in ['bhv', 'nidaq', 'running', 'eye', 'cam']:
