@@ -180,6 +180,7 @@ class behavior(txtcol):
                     temp[temp > 0.5] = 5.0
                     temp[temp <= 0.5] = 0.0
                     temp.iloc[-1] = 0.0
+                    temp.iloc[0] = 0.0
                 temp['timestamps'] = NIDAQ['timestamps'].round(4)
                 temp['mouse'] = self.mouse
                 temp['date'] = self.date
