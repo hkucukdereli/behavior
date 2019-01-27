@@ -2,6 +2,7 @@ import os
 import math
 import numpy as np
 import pandas as pd
+import scipy.io as scio
 
 def calldir(basedir, mouse, date, run):
     dirpath = basedir + '/{}/{}_{}'.format(mouse, date, mouse)
@@ -23,7 +24,11 @@ def callpath(basedir, mouse, date, run, filetype):
             if fname in os.listdir(calldir(basedir, mouse, date, run)):
                 path = calldir(basedir, mouse, date, run) + '/' + fname
             else:
-                path = calldir(basedir, mouse, date, run) + '/Experiment-{}-{}-{}-20{}-Run{}{}'.format(mouse, date[2:4], date[4:6], date[0:2], run, filetype)
+                fname = '{}_{}_run{}{}'.format(date, mouse, run, filetype)
+                if fname in os.listdir(calldir(basedir, mouse, date, run)):
+                    path = path = calldir(basedir, mouse, date, run) + '/' + fname
+                else:
+                    path = calldir(basedir, mouse, date, run) + '/Experiment-{}-{}-{}-20{}-Run{}{}'.format(mouse, date[2:4], date[4:6], date[0:2], run, filetype)
     else:
         filetype = '.' + filetype
         fname = '{}_{}_Run{}{}'.format(date, mouse, run, filetype)
